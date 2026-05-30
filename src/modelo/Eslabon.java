@@ -4,6 +4,8 @@
  */
 package modelo;
 
+import Excepciones.LongitudInvalida;
+
 /**
  *
  * @author User Gamer
@@ -12,18 +14,30 @@ package modelo;
 // ESTA CLASE REPRESENTA UN ESLABON DEL BRAZO ROBOTICO
 public class Eslabon {
     private double longitud;
-    private double angulo; // para definir completamente a un eslabon necesitamos su longitud y el angulo que forma con el eje x
+    private double angulo; 
+    private double anguloMin;
+    private double anguloMax; // cuanto podria girar cada eslabon podriamos decidir nosotros
 
-    public Eslabon(double longitud, double angulo) {
+    public Eslabon(double longitud, double angulo) throws LongitudInvalida {
+        if(longitud <=0){
+            throw new LongitudInvalida();
+        } else{
         this.longitud = longitud;
         this.angulo = angulo;
+        anguloMin = -Math.PI;
+        anguloMax = Math.PI;
+        }
     }
 
     public double getLongitud() {
         return longitud;
     }
 
-    public void setLongitud(double longitud) {
+    public void setLongitud(double longitud) throws LongitudInvalida {
+        if(longitud <=0){
+            throw new LongitudInvalida();
+        } 
+        
         this.longitud = longitud;
     }
 
@@ -32,7 +46,28 @@ public class Eslabon {
     }
 
     public void setAngulo(double angulo) {
-        this.angulo = angulo;
+        if(angulo < anguloMin){
+            this.angulo = anguloMin;
+        } else if(angulo > anguloMax){
+            this.angulo = anguloMax;
+        } else{
+            this.angulo = angulo;
+        }
     }
-    
+
+    public double getAnguloMin() {
+        return anguloMin;
+    }
+
+    public void setAnguloMin(double anguloMin) {
+        this.anguloMin = anguloMin;
+    }
+
+    public double getAnguloMax() {
+        return anguloMax;
+    }
+
+    public void setAnguloMax(double anguloMax) {
+        this.anguloMax = anguloMax;
+    }
 }

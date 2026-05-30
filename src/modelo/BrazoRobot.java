@@ -25,6 +25,36 @@ public class BrazoRobot {
     eslabones.add(e);
     }
     
+    public void quitarEslabon(int indice){
+        if(indice<0 || indice >= eslabones.size()){
+            throw new IndexOutOfBoundsException("Indice no valido");
+        }
+        else{
+            eslabones.remove(indice);
+        }
+    }
+
+    public List<Eslabon> getEslabones() {
+        return eslabones;
+    }
+
+
+    public Punto getObjetivo() {
+        return objetivo;
+    }
+
+    public void setObjetivo(Punto objetivo) {
+        this.objetivo = objetivo;
+    }
+    
+    public double AlcanceMaximo(){
+        double suma = 0;
+        for (Eslabon eslabone : eslabones) {
+            suma+= eslabone.getLongitud();
+        }
+        return suma;
+    }
+    
     
     
 }
