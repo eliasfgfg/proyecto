@@ -22,13 +22,19 @@ public class SimuladorRobotGUI extends JFrame {
     private JTextField txtL1, txtL2; 
     private JTextField txtX, txtY;   
     private JButton btnCalcular;
+    private JButton btnGuardar;
     private PanelDibujo panelDibujo; // clase privada algo nuevo que tuve que aprender XD
 
     public SimuladorRobotGUI() {
+        double[] configGuardada = calculos.GestorArchivo.cargarConfiguracion();
+        double l1Inicial = configGuardada[0];
+        double l2Inicial = configGuardada[1];
+        double xInicial = configGuardada[2];
+        double yInicial = configGuardada[3];
         try {
             robot = new BrazoRobot();
-            robot.agregarEslabon(new Eslabon(140, Math.toRadians(45))); 
-            robot.agregarEslabon(new Eslabon(110, Math.toRadians(30)));  // ponemos ya un brazo por defecto
+            robot.agregarEslabon(new Eslabon(l1Inicial, Math.toRadians(45))); 
+            robot.agregarEslabon(new Eslabon(l2Inicial, Math.toRadians(30)));  // ponemos ya un brazo guardado
         } catch (LongitudInvalida e) {
         }
         puntoObjetivo = CinematicaDirecta.calcularPunto(robot); // calculamos el punto del efector dado
@@ -42,35 +48,43 @@ public class SimuladorRobotGUI extends JFrame {
         panelControles.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); // creamos un panel arriba para cargar los datos
         
         panelControles.add(new JLabel("Largo Eslabon 1:"));
-        txtL1 = new JTextField("140", 4); // aca es donde cargaremos los datos 
+        txtL1 = new JTextField(String.valueOf((int)l1Inicial), 4);; // aca es donde cargaremos los datos 
         panelControles.add(txtL1);
 
         panelControles.add(new JLabel("Largo Eslabon 2:"));
-        txtL2 = new JTextField("110", 4);
+        txtL2 = new JTextField(String.valueOf((int)l2Inicial), 4);
         panelControles.add(txtL2);
 
         panelControles.add(new JLabel(" | "));
 
         panelControles.add(new JLabel("X Objetivo:"));
-        txtX = new JTextField("120", 4);
+        txtX = new JTextField(String.valueOf((int)xInicial), 4);
         panelControles.add(txtX);
 
         panelControles.add(new JLabel("Y Objetivo:"));
-        txtY = new JTextField("120", 4);
+        txtY = new JTextField(String.valueOf((int)yInicial), 4);
         panelControles.add(txtY);
 
-        btnCalcular = new JButton("Configurar y simular");
+        btnCalcular = new JButton("simular");
         panelControles.add(btnCalcular); // nuestro boton para hcaer que funcione todo
+        
+        btnGuardar = new JButton("Guardar");
+        panelControles.add(btnGuardar);
 
         add(panelControles, BorderLayout.NORTH);
 
         panelDibujo = new PanelDibujo();
         add(panelDibujo, BorderLayout.CENTER);
-        temporizador = new Timer(100, new ActionListener() { // cada 100 milisegundos se realizara esta accion un vez tocado el boton
+      temporizador = new Timer(100, new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {  // llama una vez al newton raphson y redibujara el panel!
+            public void actionPerformed(ActionEvent e) {
                 boolean llego = NewtonRaphsonMultidimensional.iterar(robot, puntoObjetivo);
                 panelDibujo.repaint();
+
+                if (llego) {
+                    temporizador.stop();
+                    JOptionPane.showMessageDialog(null, "Objetivo alcanzado");
+                }
             }
         });
         btnCalcular.addActionListener(new ActionListener() { // empezamos a configuar que hara el boton 
@@ -97,6 +111,28 @@ public class SimuladorRobotGUI extends JFrame {
                     JOptionPane.showMessageDialog(null, "favor, ingresar un nro valido");
                 } catch (LongitudInvalida ex) {
                     JOptionPane.showMessageDialog(null,"Longitud Inválida");
+                }
+            }
+        });
+        btnGuardar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    double l1 = Double.parseDouble(txtL1.getText());
+                    double l2 = Double.parseDouble(txtL2.getText()); // leemos los datos actuales
+                    double x = Double.parseDouble(txtX.getText());
+                    double y = Double.parseDouble(txtY.getText());
+                    if (l1 <= 0 || l2 <= 0) {
+                        JOptionPane.showMessageDialog(null, "No se puede guardar.");  // por si ingresa longitudes invalidas
+                        return;
+                    }
+
+                    calculos.GestorArchivo.guardarConfiguracion(l1, l2, x, y);
+                    
+                    JOptionPane.showMessageDialog(null, "Configuracion guardada");
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "ERROR: No se puede guardar porque hay campos con letras");
                 }
             }
         });
