@@ -54,7 +54,7 @@ donde:
 
 
 
-## Simulacion
+## Simulación
 ![Simulacion](Simulacion.gif)
 
 
