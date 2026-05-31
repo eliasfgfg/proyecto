@@ -45,7 +45,7 @@ donde:
 - J es la matriz Jacobiana del sistema.
 
 ## UML del Proyecto
-(UML PROYECTO.png)
+![uml](UMLPROYECTO.png)
 
 ##Interfaz
 ![GUI](INTERFAZ.png)
