@@ -47,8 +47,12 @@ donde:
 ## UML del Proyecto
 ![uml](UMLPROYECTO.png)
 
+
+
 ##Interfaz
 ![GUI](INTERFAZ.png)
+
+
 
 ##Simulacion
 ![Simulacion](Simulacion.gif)
