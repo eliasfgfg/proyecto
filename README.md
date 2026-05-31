@@ -49,12 +49,12 @@ donde:
 
 
 
-##Interfaz
+## Interfaz
 ![GUI](INTERFAZ.png)
 
 
 
-##Simulacion
+## Simulacion
 ![Simulacion](Simulacion.gif)
 
 
